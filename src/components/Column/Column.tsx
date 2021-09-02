@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Cards from '../Cards';
 import ChengeIcon from '../assets/img/ChengeIcon.png';
 import plusIcon from '../assets/img/plus.png';
-import { ColumnProps } from '../app/entity';
+import { ColumnProps } from '../App/entity';
 import {
   NameColumn,
   ImgColumn,
@@ -16,26 +16,55 @@ import {
   ColumnContent,
   CardsItem,
 } from './columnStyling';
+
 function Column(props: ColumnProps) {
   const [newNameColumn, setNameColumn] = useState('');
+  const [chengeColumn, setChengeColumn] = useState({
+    statusColumn: false,
+    chengeIdColumn: -1,
+  });
+
   function onNewNameColumn(e: React.FormEvent<HTMLInputElement>): void {
     setNameColumn(e.currentTarget.value);
   }
-  function onChenge(value: string, indexCol: number) {
-    props.changeStatusColumn(indexCol);
+
+  function switchChenge(value: string, indexCol: number) {
+    setChengeColumn({ statusColumn: true, chengeIdColumn: indexCol });
     setNameColumn(value);
+  }
+  function onChenge(indexColumn: number) {
+    props.newNameColumn(newNameColumn, indexColumn);
+    setChengeColumn({ statusColumn: false, chengeIdColumn: -1 });
   }
   const elementsColumn = props.dataColumn.map((itemColumn) => {
     const { nameColumn, indexColumn } = itemColumn;
     let change: JSX.Element;
-    if (itemColumn.changeColumn === false) {
+    if (
+      chengeColumn.statusColumn &&
+      chengeColumn.chengeIdColumn === indexColumn
+    ) {
+      change = (
+        <div>
+          <ChengeWraper>
+            <InputName
+              type="text"
+              defaultValue={nameColumn}
+              onChange={onNewNameColumn}
+            />
+            <ButtonColumn onClick={() => onChenge(itemColumn.indexColumn)}>
+              Изменить
+            </ButtonColumn>
+          </ChengeWraper>
+        </div>
+      );
+    } else {
       change = (
         <div>
           <Flex>
             <NameColumn>{nameColumn}</NameColumn>
             <ButtonChenge
               onClick={() =>
-                onChenge({ nameColumn }.nameColumn, itemColumn.indexColumn)
+                switchChenge({ nameColumn }.nameColumn, itemColumn.indexColumn)
               }>
               <ImgColumn src={ChengeIcon} alt="chenge" />
             </ButtonChenge>
@@ -50,25 +79,8 @@ function Column(props: ColumnProps) {
           </Flex>
         </div>
       );
-    } else {
-      change = (
-        <div>
-          <ChengeWraper>
-            <InputName
-              type="text"
-              defaultValue={nameColumn}
-              onChange={onNewNameColumn}
-            />
-            <ButtonColumn
-              onClick={() =>
-                props.newNameColumn(newNameColumn, itemColumn.indexColumn)
-              }>
-              Изменить
-            </ButtonColumn>
-          </ChengeWraper>
-        </div>
-      );
     }
+
     const elements = props.dataCards.map((itemCards) => {
       const card = itemCards;
       if (itemCards.columnID === { indexColumn }.indexColumn) {
@@ -80,14 +92,13 @@ function Column(props: ColumnProps) {
               onDelete={() => props.onDelete(itemCards.id)}
               onToggleChecked={() => props.onToggleChecked(itemCards.id)}
               setPopupCard={props.setPopupCard}
-              switchs={props.switchs}
-              setSwitchs={props.setSwitchs}
               comments={props.comments}
             />
           </CardsItem>
         );
       }
     });
+
     return (
       <ColumnContent key={indexColumn}>
         {change}

@@ -9,20 +9,16 @@ export type CardType = {
   checked: boolean;
   columnID: number;
   id: number;
-  changeTheme: boolean;
-  changeText: boolean;
 };
 export type ColumnType = {
   nameColumn: string;
   indexColumn: number;
-  changeColumn: boolean;
 };
 export type CommentType = {
   idCards: number;
-  idComents: number;
-  authorComents: string;
-  coment: string;
-  chengeComment: boolean;
+  idComments: number;
+  authorComments: string;
+  commentText: string;
 };
 export type CreateActiveType = {
   status: boolean;
@@ -37,14 +33,16 @@ export interface CardPopupProps {
   dataColumn: ColumnType[];
   comments: CommentType[];
   popupCard: PopupCardType[];
+  chengeTheme: boolean;
+  chengeText: boolean;
   setPopupCard(popupCard: PopupCardType[]): void;
   addComments(comment: string, idCards: number): void;
   onDeleteCommets(id: number): void;
-  switchs: boolean;
-  setSwitchs(switchs: boolean): void;
   newThemeCard(name: string, id: number): void;
   newTextCard(text: string, id: number): void;
   newTextComment(text: string, id: number): void;
+  setChengeTheme(chengeTheme: boolean): void;
+  setChengeText(chengeText: boolean): void;
 }
 export interface CardProps {
   cards: CardType[];
@@ -53,8 +51,6 @@ export interface CardProps {
   onToggleChecked(id: number): void;
   setPopupCard(popupCard: PopupCardType[]): void;
   comments: CommentType[];
-  switchs: boolean;
-  setSwitchs(switchs: boolean): void;
 }
 export interface ColumnProps {
   dataCards: CardType[];
@@ -66,10 +62,7 @@ export interface ColumnProps {
   comments: CommentType[];
   onDelete(id: number): void;
   onToggleChecked(id: number): void;
-  changeStatusColumn(id: number): void;
   newNameColumn(name: string, id: number): void;
-  switchs: boolean;
-  setSwitchs(switchs: boolean): void;
 }
 export interface CreateCardsProps {
   active: CreateActiveType[];
@@ -80,4 +73,11 @@ export interface CreateCardsProps {
 export interface NameProps {
   name: NameType[];
   setName(name: NameType[]): void;
+}
+export interface CommentProps {
+  comment: CommentType;
+  newTextComment(text: string, id: number): void;
+  onDeleteCommets(id: number): void;
+  idCommentChenge: number;
+  setIdCommentChenge(idCommentChenge: number): void;
 }

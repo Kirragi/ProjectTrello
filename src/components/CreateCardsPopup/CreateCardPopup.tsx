@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import crossIcon from '../assets/img/cross.png';
-import { CreateCardsProps } from '../app/entity';
+import { CreateCardsProps } from '../App/entity';
 import {
   WrapperPopup,
   HeaderPopup,
@@ -13,15 +13,19 @@ import {
   Textarea,
   Button,
 } from './createCardStyling';
+
 function CreateCardsPopup(props: CreateCardsProps) {
   const [themeNewCards, setThemeNewCards] = useState('');
   const [textNewCards, setTextNewCards] = useState('');
+
   function onThemeNewCards(e: React.FormEvent<HTMLInputElement>): void {
     setThemeNewCards(e.currentTarget.value);
   }
+
   function onTextNewCards(e: React.FormEvent<HTMLTextAreaElement>): void {
     setTextNewCards(e.currentTarget.value);
   }
+
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (themeNewCards !== '' && textNewCards !== '') {
@@ -31,6 +35,7 @@ function CreateCardsPopup(props: CreateCardsProps) {
       props.setActive([{ status: false, createIndex: 0 }]);
     }
   }
+
   let popup: JSX.Element;
   if (props.active[0].status === true) {
     popup = (
@@ -68,6 +73,7 @@ function CreateCardsPopup(props: CreateCardsProps) {
   } else {
     popup = <div></div>;
   }
+
   return (
     <div>
       <div> {popup}</div>

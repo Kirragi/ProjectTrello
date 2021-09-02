@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NameProps } from '../app/entity';
+import { NameProps } from '../App/entity';
 import {
   Button,
   WrapperPopup,
@@ -9,21 +9,24 @@ import {
   Flex,
   Name,
 } from './nameStyling';
+
 function NamePopup(props: NameProps) {
-  const [NewNeme, setNewNeme] = useState('');
+  const [newNeme, setNewNeme] = useState('');
+
   function onThemeNewCards(e: React.FormEvent<HTMLInputElement>): void {
     setNewNeme(e.currentTarget.value);
   }
+
   function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    props.setName([{ status: false, name: NewNeme }]);
+    props.setName([{ status: false, name: newNeme }]);
     localStorage.setItem(
       'name',
-      JSON.stringify([{ status: false, name: NewNeme }]),
+      JSON.stringify([{ status: false, name: newNeme }]),
     );
   }
-  let popup: JSX.Element;
 
+  let popup: JSX.Element;
   if (props.name[0].status === true) {
     popup = (
       <WrapperPopup>
@@ -41,6 +44,7 @@ function NamePopup(props: NameProps) {
   } else {
     popup = <Name>{props.name[0].name}</Name>;
   }
+
   return (
     <div>
       <div> {popup}</div>

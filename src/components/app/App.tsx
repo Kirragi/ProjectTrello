@@ -12,6 +12,7 @@ function App() {
   } else {
     dataName = [{ status: true, name: ' ' }];
   }
+
   let dataCards: CardType[];
   if (localStorage.getItem('cards') != null) {
     const cardsStr = localStorage.getItem('cards') as string;
@@ -25,8 +26,6 @@ function App() {
         checked: false,
         columnID: 1,
         id: 1,
-        changeTheme: false,
-        changeText: false,
       },
     ];
   }
@@ -37,12 +36,13 @@ function App() {
     dataColumn = JSON.parse(columnStr) as ColumnType[];
   } else {
     dataColumn = [
-      { nameColumn: 'ToDoo', indexColumn: 1, changeColumn: false },
-      { nameColumn: 'In Progress', indexColumn: 2, changeColumn: false },
-      { nameColumn: 'Testing', indexColumn: 3, changeColumn: false },
-      { nameColumn: 'Done', indexColumn: 4, changeColumn: false },
+      { nameColumn: 'ToDoo', indexColumn: 1 },
+      { nameColumn: 'In Progress', indexColumn: 2 },
+      { nameColumn: 'Testing', indexColumn: 3 },
+      { nameColumn: 'Done', indexColumn: 4 },
     ];
   }
+
   let dataComments: CommentType[];
   if (localStorage.getItem('comments') != null) {
     const commentStr = localStorage.getItem('comments') as string;
@@ -50,15 +50,15 @@ function App() {
   } else {
     dataComments = [
       {
-        idComents: 1,
+        idComments: 1,
         idCards: 1,
-        authorComents: 'Andre',
-        coment:
+        authorComments: 'Andre',
+        commentText:
           'Многие думают, что Lorem Ipsum - взятый с потолка псевдо-латинский набор слов, но это не совсем так.',
-        chengeComment: false,
       },
     ];
   }
+
   const [cards, setCards] = useState(dataCards);
   const [comments, setComments] = useState(dataComments);
   const [column, setColumn] = useState(dataColumn);
@@ -72,7 +72,8 @@ function App() {
   ]);
   const [popupCard, setPopupCard] = useState([{ status: false, cardIndex: 0 }]);
   const [escLisner, setEscLisner] = useState(true);
-  const [switchs, setSwitchs] = useState(false);
+  const [chengeTheme, setChengeTheme] = useState(false);
+  const [chengeText, setChengeText] = useState(false);
 
   function addCard(theme: string, text: string, columnID: number): void {
     const array = dataCards;
@@ -91,35 +92,33 @@ function App() {
       checked: false,
       columnID: columnID,
       id: idMax[0] + 1,
-      changeTheme: false,
-      changeText: false,
     };
     const newCards = [newItem, ...dataCards];
     localStorage.setItem('cards', JSON.stringify(newCards));
     setCards(newCards);
-    setSwitchs(!switchs);
   }
+
   function addComments(comment: string, idCards: number): void {
     const array = dataComments;
     const idMax = [0];
     if (array !== []) {
       for (let i = 0; i < array.length; i++) {
-        if (array[i].idComents > idMax[0]) {
-          idMax[0] = array[i].idComents;
+        if (array[i].idComments > idMax[0]) {
+          idMax[0] = array[i].idComments;
         }
       }
     }
     const newItem = {
-      idComents: idMax[0] + 1,
+      idComments: idMax[0] + 1,
       idCards: idCards,
-      authorComents: name[0].name,
-      coment: comment,
-      chengeComment: false,
+      authorComments: name[0].name,
+      commentText: comment,
     };
     const newComments = [newItem, ...dataComments];
     localStorage.setItem('comments', JSON.stringify(newComments));
     setComments(newComments);
   }
+
   function onDelete(id: number): void {
     const deletId = cards.findIndex((elem) => elem.id === id);
     const before = cards.slice(0, deletId);
@@ -138,6 +137,7 @@ function App() {
     localStorage.setItem('cards', JSON.stringify(newArr));
     setCards(newArr);
   }
+
   function onToggleChecked(id: number): void {
     const index = cards.findIndex((elem) => elem.id === id);
     const old = cards[index];
@@ -151,30 +151,12 @@ function App() {
     setCards(newArr);
   }
   function onDeleteCommets(id: number): void {
-    const deletId = comments.findIndex((elem) => elem.idComents === id);
+    const deletId = comments.findIndex((elem) => elem.idComments === id);
     const before = comments.slice(0, deletId);
     const after = comments.slice(deletId + 1);
     const newArr = [...before, ...after];
     localStorage.setItem('comments', JSON.stringify(newArr));
     setComments(newArr);
-  }
-  function closeChenge() {
-    for (let i = 0; i < dataColumn.length; i++) {
-      dataColumn[i].changeColumn = false;
-      setColumn(dataColumn);
-      setSwitchs(!switchs);
-    }
-  }
-  function changeStatusColumn(id: number) {
-    for (let i = 0; i < dataColumn.length; i++) {
-      if (dataColumn[i].indexColumn === id) {
-        dataColumn[i].changeColumn = true;
-      } else {
-        dataColumn[i].changeColumn = false;
-      }
-    }
-    setColumn(dataColumn);
-    setSwitchs(!switchs);
   }
   function newNameColumn(name: string, id: number) {
     if (name !== '') {
@@ -191,6 +173,7 @@ function App() {
       localStorage.setItem('column', JSON.stringify(dataColumn));
     }
   }
+
   function newThemeCard(name: string, id: number) {
     if (name !== '') {
       const index = cards.findIndex((elem) => elem.id === id);
@@ -206,6 +189,7 @@ function App() {
       localStorage.setItem('cards', JSON.stringify(dataCards));
     }
   }
+
   function newTextCard(text: string, id: number) {
     if (text !== '') {
       const index = cards.findIndex((elem) => elem.id === id);
@@ -221,11 +205,12 @@ function App() {
       localStorage.setItem('cards', JSON.stringify(dataCards));
     }
   }
+
   function newTextComment(text: string, id: number) {
     if (text !== '') {
-      const index = comments.findIndex((elem) => elem.idComents === id);
+      const index = comments.findIndex((elem) => elem.idComments === id);
       const old = comments[index];
-      const newItem = { ...old, coment: text, chengeComment: false };
+      const newItem = { ...old, commentText: text, chengeComment: false };
       const newArr = [
         ...comments.slice(0, index),
         newItem,
@@ -236,20 +221,23 @@ function App() {
       localStorage.setItem('comments', JSON.stringify(dataComments));
     }
   }
+
   function addListen() {
     document.addEventListener('keyup', (event) => {
       if (event.keyCode === 27) {
-        closeChenge();
         setCreateActive([{ status: false, createIndex: 0 }]);
         setPopupCard([{ status: false, cardIndex: 0 }]);
-        setSwitchs(!switchs);
+        setChengeText(false);
+        setChengeTheme(false);
       }
     });
   }
+
   if (escLisner === true) {
     addListen();
     setEscLisner(false);
   }
+
   return (
     <div>
       <NamePopup name={name} setName={setName} />
@@ -258,14 +246,11 @@ function App() {
         dataCards={cards}
         dataColumn={column}
         setColumn={setColumn}
-        changeStatusColumn={changeStatusColumn}
         active={createActive}
         setActive={setCreateActive}
         onDelete={onDelete}
         onToggleChecked={onToggleChecked}
         setPopupCard={setPopupCard}
-        switchs={switchs}
-        setSwitchs={setSwitchs}
         comments={comments}
       />
       <CreateCardsPopup
@@ -282,11 +267,13 @@ function App() {
         setPopupCard={setPopupCard}
         addComments={addComments}
         onDeleteCommets={onDeleteCommets}
-        switchs={switchs}
-        setSwitchs={setSwitchs}
         newThemeCard={newThemeCard}
         newTextCard={newTextCard}
         newTextComment={newTextComment}
+        chengeTheme={chengeTheme}
+        chengeText={chengeText}
+        setChengeTheme={setChengeTheme}
+        setChengeText={setChengeText}
       />
     </div>
   );
